@@ -1,6 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+// Resharper disable ALL
+
 namespace Box2d
 {
     public unsafe partial class Box2d

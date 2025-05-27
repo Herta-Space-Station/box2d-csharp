@@ -1,6 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using static Box2d.Box2d;
 
+// Resharper disable ALL
+
 namespace Box2d
 {
     // @defgroup math Math
@@ -8,7 +10,9 @@ namespace Box2d
 
     /// 2D vector
     /// This can be used to represent a point or free vector
+#pragma warning disable CS0660, CS0661
     public struct b2Vec2
+#pragma warning disable CS0660, CS0661
     {
         /// coordinates
         public float x, y;
@@ -622,7 +626,8 @@ namespace Box2d
         {
             b2Vec2 u = new b2Vec2
             {
-                x = A.cx.x * v.x + A.cy.x * v.y, y = A.cx.y * v.x + A.cy.y * v.y,
+                x = A.cx.x * v.x + A.cy.x * v.y,
+                y = A.cx.y * v.x + A.cy.y * v.y,
             };
             return u;
         }

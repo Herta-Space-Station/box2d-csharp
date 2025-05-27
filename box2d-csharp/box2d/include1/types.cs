@@ -4,79 +4,79 @@
 
 namespace Box2d
 {
-	/// <summary>
-	///     Task interface
-	/// </summary>
-	/// <remarks>
-	///     This is prototype for a Box2D task. Your task system is expected to invoke the Box2D task with these arguments.
-	///     The task spans a range of the parallel-for: [startIndex, endIndex)
-	///     The worker index must correctly identify each worker in the user thread pool, expected in [0, workerCount).
-	///     A worker must only exist on only one thread at a time and is analogous to the thread index.
-	///     The task context is the context pointer sent from Box2D when it is enqueued.
-	///     The startIndex and endIndex are expected in the range [0, itemCount) where itemCount is the argument to
-	///     b2EnqueueTaskCallback
-	///     below. Box2D expects startIndex &lt; endIndex and will execute a loop like this:
-	///     <code>
-	/// for (int i = startIndex; i &lt; endIndex; ++i)
-	/// {
-	///     DoWork();
-	/// }
-	/// </code>
-	/// </remarks>
-	/// <ingroup>world</ingroup>
-	public unsafe delegate void b2TaskCallback(int startIndex, int endIndex, uint workerIndex, void* taskContext);
+    /// <summary>
+    ///     Task interface
+    /// </summary>
+    /// <remarks>
+    ///     This is prototype for a Box2D task. Your task system is expected to invoke the Box2D task with these arguments.
+    ///     The task spans a range of the parallel-for: [startIndex, endIndex)
+    ///     The worker index must correctly identify each worker in the user thread pool, expected in [0, workerCount).
+    ///     A worker must only exist on only one thread at a time and is analogous to the thread index.
+    ///     The task context is the context pointer sent from Box2D when it is enqueued.
+    ///     The startIndex and endIndex are expected in the range [0, itemCount) where itemCount is the argument to
+    ///     b2EnqueueTaskCallback
+    ///     below. Box2D expects startIndex &lt; endIndex and will execute a loop like this:
+    ///     <code>
+    /// for (int i = startIndex; i &lt; endIndex; ++i)
+    /// {
+    ///     DoWork();
+    /// }
+    /// </code>
+    /// </remarks>
+    /// <ingroup>world</ingroup>
+    public unsafe delegate void b2TaskCallback(int startIndex, int endIndex, uint workerIndex, void* taskContext);
 
-	/// <summary>
-	///     These functions can be provided to Box2D to invoke a task system. These are designed to work well with enkiTS.
-	/// </summary>
-	/// <remarks>
-	///     Returns a pointer to the user's task object. May be null. A null value indicates to Box2D that the work was
-	///     executed
-	///     serially within the callback and there is no need to call <c>b2FinishTaskCallback</c>.
-	///     The <paramref name="itemCount" /> is the number of Box2D work items that are to be partitioned among workers by the
-	///     user's task system.
-	///     This is essentially a parallel-for. The <paramref name="minRange" /> parameter is a suggestion of the minimum
-	///     number of items to assign
-	///     per worker to reduce overhead. For example, suppose the task is small and that <paramref name="itemCount" /> is 16.
-	///     A <paramref name="minRange" />
-	///     of 8 suggests that your task system should split the work items among just two workers, even if you have more
-	///     available.
-	///     In general the range [startIndex, endIndex) sent to <c>b2TaskCallback</c> should obey:
-	///     <c>endIndex - startIndex &gt;= minRange</c>
-	///     The exception of course is when <paramref name="itemCount" /> &lt; <paramref name="minRange" />.
-	/// </remarks>
-	/// <ingroup>world</ingroup>
-	public unsafe delegate void* b2EnqueueTaskCallback([NativeType(typeof(b2TaskCallback))] delegate* managed<int, int, uint, void*, void> task, int itemCount, int minRange, void* taskContext, void* userContext);
+    /// <summary>
+    ///     These functions can be provided to Box2D to invoke a task system. These are designed to work well with enkiTS.
+    /// </summary>
+    /// <remarks>
+    ///     Returns a pointer to the user's task object. May be null. A null value indicates to Box2D that the work was
+    ///     executed
+    ///     serially within the callback and there is no need to call <c>b2FinishTaskCallback</c>.
+    ///     The <paramref name="itemCount" /> is the number of Box2D work items that are to be partitioned among workers by the
+    ///     user's task system.
+    ///     This is essentially a parallel-for. The <paramref name="minRange" /> parameter is a suggestion of the minimum
+    ///     number of items to assign
+    ///     per worker to reduce overhead. For example, suppose the task is small and that <paramref name="itemCount" /> is 16.
+    ///     A <paramref name="minRange" />
+    ///     of 8 suggests that your task system should split the work items among just two workers, even if you have more
+    ///     available.
+    ///     In general the range [startIndex, endIndex) sent to <c>b2TaskCallback</c> should obey:
+    ///     <c>endIndex - startIndex &gt;= minRange</c>
+    ///     The exception of course is when <paramref name="itemCount" /> &lt; <paramref name="minRange" />.
+    /// </remarks>
+    /// <ingroup>world</ingroup>
+    public unsafe delegate void* b2EnqueueTaskCallback([NativeType(typeof(b2TaskCallback))] delegate* managed<int, int, uint, void*, void> task, int itemCount, int minRange, void* taskContext, void* userContext);
 
-	/// <summary>
-	///     Finishes a user task object that wraps a Box2D task.
-	/// </summary>
-	/// <ingroup>world</ingroup>
-	public unsafe delegate void b2FinishTaskCallback(void* userTask, void* userContext);
+    /// <summary>
+    ///     Finishes a user task object that wraps a Box2D task.
+    /// </summary>
+    /// <ingroup>world</ingroup>
+    public unsafe delegate void b2FinishTaskCallback(void* userTask, void* userContext);
 
-	/// <summary>
-	///     Optional friction mixing callback. This intentionally provides no context objects because this is called
-	///     from a worker thread.
-	/// </summary>
-	/// <remarks>
-	///     <b>Warning:</b> This function should not attempt to modify Box2D state or user application state.
-	/// </remarks>
-	/// <ingroup>world</ingroup>
-	public delegate float b2FrictionCallback(float frictionA, int userMaterialIdA, float frictionB, int userMaterialIdB);
+    /// <summary>
+    ///     Optional friction mixing callback. This intentionally provides no context objects because this is called
+    ///     from a worker thread.
+    /// </summary>
+    /// <remarks>
+    ///     <b>Warning:</b> This function should not attempt to modify Box2D state or user application state.
+    /// </remarks>
+    /// <ingroup>world</ingroup>
+    public delegate float b2FrictionCallback(float frictionA, int userMaterialIdA, float frictionB, int userMaterialIdB);
 
-	/// <summary>
-	///     Optional restitution mixing callback. This intentionally provides no context objects because this is called
-	///     from a worker thread.
-	/// </summary>
-	/// <remarks>
-	///     <b>Warning:</b> This function should not attempt to modify Box2D state or user application state.
-	/// </remarks>
-	/// <ingroup>world</ingroup>
-	public delegate float b2RestitutionCallback(float restitutionA, int userMaterialIdA, float restitutionB, int userMaterialIdB);
+    /// <summary>
+    ///     Optional restitution mixing callback. This intentionally provides no context objects because this is called
+    ///     from a worker thread.
+    /// </summary>
+    /// <remarks>
+    ///     <b>Warning:</b> This function should not attempt to modify Box2D state or user application state.
+    /// </remarks>
+    /// <ingroup>world</ingroup>
+    public delegate float b2RestitutionCallback(float restitutionA, int userMaterialIdA, float restitutionB, int userMaterialIdB);
 
-	/// Result from b2World_RayCastClosest
-	/// @ingroup world
-	public struct b2RayResult
+    /// Result from b2World_RayCastClosest
+    /// @ingroup world
+    public struct b2RayResult
     {
         public b2ShapeId shapeId;
         public b2Vec2 point;
@@ -87,10 +87,10 @@ namespace Box2d
         public bool hit;
     }
 
-	/// World definition used to create a simulation world.
-	/// Must be initialized using b2DefaultWorldDef().
-	/// @ingroup world
-	public unsafe struct b2WorldDef
+    /// World definition used to create a simulation world.
+    /// Must be initialized using b2DefaultWorldDef().
+    /// @ingroup world
+    public unsafe struct b2WorldDef
     {
         /// Gravity vector. Box2D has no up-vector defined.
         public b2Vec2 gravity;
@@ -164,10 +164,10 @@ namespace Box2d
         public int internalValue;
     }
 
-	/// The body simulation type.
-	/// Each body is one of these three types. The type determines how the body behaves in the simulation.
-	/// @ingroup body
-	public enum b2BodyType
+    /// The body simulation type.
+    /// Each body is one of these three types. The type determines how the body behaves in the simulation.
+    /// @ingroup body
+    public enum b2BodyType
     {
         /// zero mass, zero velocity, may be manually moved
         b2_staticBody = 0,
@@ -184,9 +184,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your world definition
-	    /// @ingroup world
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your world definition
+        /// @ingroup world
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2WorldDef b2DefaultWorldDef();
     }
 
@@ -234,7 +234,8 @@ namespace Box2d
         public float sleepThreshold;
 
         /// Optional body name for debugging. Up to 31 characters (excluding null termination)
-        [ReadOnly] public byte* name;
+        [ReadOnly]
+        public byte* name;
 
         /// Use this to store application specific body data.
         public void* userData;
@@ -270,43 +271,43 @@ namespace Box2d
     /// @ingroup shape
     public struct b2Filter
     {
-	    /// The collision category bits. Normally you would just set one bit. The category bits should
-	    /// represent your application object types. For example:
-	    /// @code{.cpp}
-	    /// enum MyCategories
-	    /// {
-	    /// Static  = 0x00000001,
-	    /// Dynamic = 0x00000002,
-	    /// Debris  = 0x00000004,
-	    /// Player  = 0x00000008,
-	    /// // etc
-	    /// };
-	    /// @endcode
-	    public ulong categoryBits;
+        /// The collision category bits. Normally you would just set one bit. The category bits should
+        /// represent your application object types. For example:
+        /// @code{.cpp}
+        /// enum MyCategories
+        /// {
+        /// Static  = 0x00000001,
+        /// Dynamic = 0x00000002,
+        /// Debris  = 0x00000004,
+        /// Player  = 0x00000008,
+        /// // etc
+        /// };
+        /// @endcode
+        public ulong categoryBits;
 
-	    /// The collision mask bits. This states the categories that this
-	    /// shape would accept for collision.
-	    /// For example, you may want your player to only collide with static objects
-	    /// and other players.
-	    /// @code{.c}
-	    /// maskBits = Static | Player;
-	    /// @endcode
-	    public ulong maskBits;
+        /// The collision mask bits. This states the categories that this
+        /// shape would accept for collision.
+        /// For example, you may want your player to only collide with static objects
+        /// and other players.
+        /// @code{.c}
+        /// maskBits = Static | Player;
+        /// @endcode
+        public ulong maskBits;
 
-	    /// Collision groups allow a certain group of objects to never collide (negative)
-	    /// or always collide (positive). A group index of zero has no effect. Non-zero group filtering
-	    /// always wins against the mask bits.
-	    /// For example, you may want ragdolls to collide with other ragdolls but you don't want
-	    /// ragdoll self-collision. In this case you would give each ragdoll a unique negative group index
-	    /// and apply that group index to all shapes on the ragdoll.
-	    public int groupIndex;
+        /// Collision groups allow a certain group of objects to never collide (negative)
+        /// or always collide (positive). A group index of zero has no effect. Non-zero group filtering
+        /// always wins against the mask bits.
+        /// For example, you may want ragdolls to collide with other ragdolls but you don't want
+        /// ragdoll self-collision. In this case you would give each ragdoll a unique negative group index
+        /// and apply that group index to all shapes on the ragdoll.
+        public int groupIndex;
     }
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your filter
-	    /// @ingroup shape
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your filter
+        /// @ingroup shape
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2Filter b2DefaultFilter();
     }
 
@@ -326,9 +327,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your query filter
-	    /// @ingroup shape
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your query filter
+        /// @ingroup shape
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2QueryFilter b2DefaultQueryFilter();
     }
 
@@ -382,9 +383,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your surface material
-	    /// @ingroup shape
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your surface material
+        /// @ingroup shape
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2SurfaceMaterial b2DefaultSurfaceMaterial();
     }
 
@@ -443,9 +444,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your shape definition
-	    /// @ingroup shape
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your shape definition
+        /// @ingroup shape
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2ShapeDef b2DefaultShapeDef();
     }
 
@@ -470,13 +471,15 @@ namespace Box2d
         public void* userData;
 
         /// An array of at least 4 points. These are cloned and may be temporary.
-        [ReadOnly] public b2Vec2* points;
+        [ReadOnly]
+        public b2Vec2* points;
 
         /// The point count, must be 4 or more.
         public int count;
 
         /// Surface materials for each segment. These are cloned.
-        [ReadOnly] public b2SurfaceMaterial* materials;
+        [ReadOnly]
+        public b2SurfaceMaterial* materials;
 
         /// The material count. Must be 1 or count. This allows you to provide one
         /// material for all segments or a unique material per segment.
@@ -497,9 +500,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your chain definition
-	    /// @ingroup shape
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your chain definition
+        /// @ingroup shape
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2ChainDef b2DefaultChainDef();
     }
 
@@ -628,9 +631,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your joint definition
-	    /// @ingroup distance_joint
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your joint definition
+        /// @ingroup distance_joint
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2DistanceJointDef b2DefaultDistanceJointDef();
     }
 
@@ -673,9 +676,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your joint definition
-	    /// @ingroup motor_joint
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your joint definition
+        /// @ingroup motor_joint
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2MotorJointDef b2DefaultMotorJointDef();
     }
 
@@ -716,9 +719,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your joint definition
-	    /// @ingroup mouse_joint
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your joint definition
+        /// @ingroup mouse_joint
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static b2MouseJointDef b2DefaultMouseJointDef();
     }
 
@@ -742,9 +745,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your joint definition
-	    /// @ingroup filter_joint
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your joint definition
+        /// @ingroup filter_joint
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2FilterJointDef b2DefaultFilterJointDef();
     }
 
@@ -814,9 +817,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your joint definition
-	    /// @ingroupd prismatic_joint
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your joint definition
+        /// @ingroupd prismatic_joint
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2PrismaticJointDef b2DefaultPrismaticJointDef();
     }
 
@@ -892,9 +895,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your joint definition.
-	    /// @ingroup revolute_joint
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your joint definition.
+        /// @ingroup revolute_joint
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2RevoluteJointDef b2DefaultRevoluteJointDef();
     }
 
@@ -946,9 +949,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your joint definition
-	    /// @ingroup weld_joint
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your joint definition
+        /// @ingroup weld_joint
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2WeldJointDef b2DefaultWeldJointDef();
     }
 
@@ -1015,9 +1018,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your joint definition
-	    /// @ingroup wheel_joint
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your joint definition
+        /// @ingroup wheel_joint
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2WheelJointDef b2DefaultWheelJointDef();
     }
 
@@ -1046,26 +1049,26 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your explosion definition
-	    /// @ingroup world
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your explosion definition
+        /// @ingroup world
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2ExplosionDef b2DefaultExplosionDef();
     }
-// <summary>
-// Events
-// World event types.
-// </summary>
-// <remarks>
-// Events are used to collect events that occur during the world time step. These events
-// are then available to query after the time step is complete. This is preferable to callbacks
-// because Box2D uses multithreaded simulation.
-// 
-// Also when events occur in the simulation step it may be problematic to modify the world, which is
-// often what applications want to do when events occur.
-// 
-// With event arrays, you can scan the events in a loop and modify the world. However, you need to be careful
-// that some event data may become invalid. There are several samples that show how to do this safely.
-// </remarks>
+    // <summary>
+    // Events
+    // World event types.
+    // </summary>
+    // <remarks>
+    // Events are used to collect events that occur during the world time step. These events
+    // are then available to query after the time step is complete. This is preferable to callbacks
+    // because Box2D uses multithreaded simulation.
+    // 
+    // Also when events occur in the simulation step it may be problematic to modify the world, which is
+    // often what applications want to do when events occur.
+    // 
+    // With event arrays, you can scan the events in a loop and modify the world. However, you need to be careful
+    // that some event data may become invalid. There are several samples that show how to do this safely.
+    // </remarks>
 
     /// A begin touch event is generated when a shape starts to overlap a sensor shape.
     public struct b2SensorBeginTouchEvent
@@ -1083,15 +1086,15 @@ namespace Box2d
     /// Therefore you should always confirm the shape id is valid using b2Shape_IsValid.
     public struct b2SensorEndTouchEvent
     {
-	    /// The id of the sensor shape
-	    /// @warning this shape may have been destroyed
-	    /// @see b2Shape_IsValid
-	    public b2ShapeId sensorShapeId;
+        /// The id of the sensor shape
+        /// @warning this shape may have been destroyed
+        /// @see b2Shape_IsValid
+        public b2ShapeId sensorShapeId;
 
-	    /// The id of the dynamic shape that stopped touching the sensor shape
-	    /// @warning this shape may have been destroyed
-	    /// @see b2Shape_IsValid
-	    public b2ShapeId visitorShapeId;
+        /// The id of the dynamic shape that stopped touching the sensor shape
+        /// @warning this shape may have been destroyed
+        /// @see b2Shape_IsValid
+        public b2ShapeId visitorShapeId;
     }
 
     /// Sensor events are buffered in the Box2D world and are available
@@ -1132,15 +1135,15 @@ namespace Box2d
     /// or shape, or changing a filter or body type.
     public struct b2ContactEndTouchEvent
     {
-	    /// Id of the first shape
-	    /// @warning this shape may have been destroyed
-	    /// @see b2Shape_IsValid
-	    public b2ShapeId shapeIdA;
+        /// Id of the first shape
+        /// @warning this shape may have been destroyed
+        /// @see b2Shape_IsValid
+        public b2ShapeId shapeIdA;
 
-	    /// Id of the second shape
-	    /// @warning this shape may have been destroyed
-	    /// @see b2Shape_IsValid
-	    public b2ShapeId shapeIdB;
+        /// Id of the second shape
+        /// @warning this shape may have been destroyed
+        /// @see b2Shape_IsValid
+        public b2ShapeId shapeIdB;
     }
 
     /// A hit touch event is generated when two shapes collide with a speed faster than the hit speed threshold.
@@ -1454,7 +1457,7 @@ namespace Box2d
 
     public unsafe delegate void DrawPointFcn(b2Vec2 p, float size, b2HexColor color, void* context);
 
-    public unsafe delegate void DrawStringFcn(b2Vec2 p, char* s, b2HexColor color, void* context);
+    public unsafe delegate void DrawStringFcn(b2Vec2 p, byte* s, b2HexColor color, void* context);
 
     /// This struct holds callbacks you can implement to draw a Box2D world.
     /// This structure should be zero initialized.
@@ -1462,7 +1465,7 @@ namespace Box2d
     public unsafe struct b2DebugDraw
     {
         /// Draw a closed polygon provided in CCW order.
-        [NativeType(typeof(DrawPolygonFcn))] 
+        [NativeType(typeof(DrawPolygonFcn))]
         public delegate* managed<b2Vec2*, int, b2HexColor, void*, void> DrawPolygonFcn;
 
         /// Draw a solid closed polygon provided in CCW order.
@@ -1470,7 +1473,7 @@ namespace Box2d
         public delegate* managed<b2Transform, b2Vec2*, int, float, b2HexColor, void*, void> DrawSolidPolygonFcn;
 
         /// Draw a circle.
-        [NativeType(typeof(DrawCircleFcn))] 
+        [NativeType(typeof(DrawCircleFcn))]
         public delegate* managed<b2Vec2, float, b2HexColor, void*, void> DrawCircleFcn;
 
         /// Draw a solid circle.
@@ -1482,20 +1485,20 @@ namespace Box2d
         public delegate* managed<b2Vec2, b2Vec2, float, b2HexColor, void*, void> DrawSolidCapsuleFcn;
 
         /// Draw a line segment.
-        [NativeType(typeof(DrawSegmentFcn))] 
+        [NativeType(typeof(DrawSegmentFcn))]
         public delegate* managed<b2Vec2, b2Vec2, b2HexColor, void*, void> DrawSegmentFcn;
 
         /// Draw a transform. Choose your own length scale.
-        [NativeType(typeof(DrawTransformFcn))] 
+        [NativeType(typeof(DrawTransformFcn))]
         public delegate* managed<b2Transform, void*, void> DrawTransformFcn;
 
         /// Draw a point.
-        [NativeType(typeof(DrawPointFcn))] 
+        [NativeType(typeof(DrawPointFcn))]
         public delegate* managed<b2Vec2, float, b2HexColor, void*, void> DrawPointFcn;
 
         /// Draw a string in world space
-        [NativeType(typeof(DrawStringFcn))] 
-        public delegate* managed<b2Vec2, char*, b2HexColor, void*, void> DrawStringFcn;
+        [NativeType(typeof(DrawStringFcn))]
+        public delegate* managed<b2Vec2, byte*, b2HexColor, void*, void> DrawStringFcn;
 
         /// Bounds to use if restricting drawing to a rectangular region
         public b2AABB drawingBounds;
@@ -1548,9 +1551,9 @@ namespace Box2d
 
     public static partial class Box2d
     {
-	    /// Use this to initialize your drawing interface. This allows you to implement a sub-set
-	    /// of the drawing functions.
-	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// Use this to initialize your drawing interface. This allows you to implement a sub-set
+        /// of the drawing functions.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static partial b2DebugDraw b2DefaultDebugDraw();
     }
 }

@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="box2d\c\" />
+      <Folder Include="box2d\include2\" />
     </ItemGroup>
 
 </Project>
