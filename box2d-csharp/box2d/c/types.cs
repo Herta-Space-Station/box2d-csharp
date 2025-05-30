@@ -69,12 +69,12 @@ namespace Box2d
             return material;
         }
 
-        public static b2SurfaceMaterial defaultMaterial = new b2SurfaceMaterial { friction = 0.6f };
+        private static b2SurfaceMaterial b2DefaultChainDef_defaultMaterial = new b2SurfaceMaterial { friction = 0.6f };
 
         public static partial b2ChainDef b2DefaultChainDef()
         {
             b2ChainDef def = new b2ChainDef();
-            def.materials = (b2SurfaceMaterial*)Unsafe.AsPointer(ref defaultMaterial);
+            def.materials = (b2SurfaceMaterial*)Unsafe.AsPointer(ref b2DefaultChainDef_defaultMaterial);
             def.materialCount = 1;
             def.filter = b2DefaultFilter();
             def.internalValue = B2_SECRET_COOKIE;
